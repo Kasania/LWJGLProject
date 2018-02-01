@@ -6,6 +6,7 @@ import static org.lwjgl.opengl.GL11.glViewport;
 
 import com.kasania.graphics.Renderer;
 import com.kasania.graphics.Window;
+import com.kasania.graphics.element.Mesh;
 
 public class DummyLogic implements Logic {
 	private int direction = 0;
@@ -13,6 +14,9 @@ public class DummyLogic implements Logic {
 	private float color = 0.0f;
 
 	private final Renderer renderer;
+	
+	private Mesh mesh;
+	
 
 	public DummyLogic() {
 		renderer = new Renderer();
@@ -20,6 +24,23 @@ public class DummyLogic implements Logic {
 
 	public void init() throws Exception{
 		renderer.init();
+		float[] positions = new float[]{
+	            -0.5f, 0.5f, 0.0f,//0
+	            -0.5f, -0.5f, 0.0f,//1
+	            0.5f, -0.5f, 0.0f,//2
+	            0.5f, 0.5f, 0.0f,//3
+	            };//4
+		float[] colours = new float[]{
+	            0.5f, 0.0f, 0.0f,
+	            0.0f, 0.5f, 0.0f,
+	            0.0f, 0.0f, 0.5f,
+	            0.0f, 0.5f, 0.5f,
+	        };
+	        int[] indices = new int[]{
+	            0, 1, 3, 3,1,2, };
+//	        System.out.println(indices.length);
+	        mesh = new Mesh(positions, colours, indices);
+	        
 	}
 
 	@Override
@@ -46,13 +67,14 @@ public class DummyLogic implements Logic {
 	@Override
 	public void render(Window window) {
 		window.setClearColor(color, color, color, 0.0f);
-		renderer.render(window);
+		renderer.render(window,mesh);
 		
 	}
 
 	@Override
 	public void cleanUp() {
 		renderer.cleanup();
+		mesh.cleanUp();
 	}
 
 }

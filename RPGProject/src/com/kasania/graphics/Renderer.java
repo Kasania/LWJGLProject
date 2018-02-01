@@ -8,7 +8,8 @@ import static org.lwjgl.opengl.GL30.*;
 
 import org.lwjgl.system.MemoryUtil;
 
-import com.kasania.graphics.shader.Shader;
+import com.kasania.graphics.element.Mesh;
+import com.kasania.graphics.element.Shader;
 import com.kasania.util.ResourceManager;
 
 public class Renderer {
@@ -25,38 +26,9 @@ public class Renderer {
 		shader.createVertexShader(ResourceManager.loadResource("/vertex.vtx"));
 		shader.createFragmentShader(ResourceManager.loadResource("/fragment.frg"));
 		shader.link();
-		
-		float[] vertices = new float[] { 
-				 0.5f, 0.5f, 0.0f, 
-				-0.5f,-0.5f, 0.0f, 
-				 0.5f,-0.5f, 0.0f,
-				-0.5f, 0.5f, 0.0f };
-		//		  x		y	  z
-		
-		FloatBuffer verticesBuffer = null;
-        try {
-            verticesBuffer = MemoryUtil.memAllocFloat(vertices.length);
-            verticesBuffer.put(vertices).flip();
-
-            vaoID = glGenVertexArrays();
-            glBindVertexArray(vaoID);
-
-            vboID = glGenBuffers();
-            glBindBuffer(GL_ARRAY_BUFFER, vboID);
-            glBufferData(GL_ARRAY_BUFFER, verticesBuffer, GL_STATIC_DRAW);
-            glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
-
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-            glBindVertexArray(0);
-        } finally {
-            if (verticesBuffer != null) {
-                MemoryUtil.memFree(verticesBuffer);
-            }
-        }
 	}
 	
-	public void render(Window window) {
+	public void render(Window window, Mesh mesh) {
         clear();
 
         if (window.isResized()) {
@@ -67,11 +39,14 @@ public class Renderer {
         shader.bind();
 
         // Bind to the VAO
-        glBindVertexArray(vaoID);
+        glBindVertexArray(mesh.getVaoID());
         glEnableVertexAttribArray(0);
-
+        glEnableVertexAttribArray(1);
+        glDrawElements(GL_TRIANGLES, mesh.getVertexCount(),GL_UNSIGNED_INT, 0);
+        
+        
         // Draw the vertices
-        glDrawArrays(GL_TRIANGLES, 0, 4);
+//        glDrawArrays(GL_TRIANGLES, 0, 4);
 
         // Restore state
         glDisableVertexAttribArray(0);

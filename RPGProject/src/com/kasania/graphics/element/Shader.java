@@ -1,4 +1,4 @@
-package com.kasania.graphics.shader;
+package com.kasania.graphics.element;
 
 import static org.lwjgl.opengl.GL20.*;
 
