@@ -68,7 +68,7 @@ public class Window {
 
 		GL.createCapabilities();
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-
+		glEnable(GL_DEPTH_TEST);
 	}
 
 	public long getHandle() {

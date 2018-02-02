@@ -37,7 +37,7 @@ public class GameManager implements Runnable {
 
 		window.init();
 		timer.init();
-		logic.init();
+		logic.init(window);
 	}
 
 	private void loop() {
