@@ -21,12 +21,14 @@ public class GameManager implements Runnable {
 	private final Timer timer;
 	private final Window window;
 	private final Logic logic;
+	private final MouseInput mouseInput;
 
 	public GameManager(String TITLE, int WIDTH, int HEIGHT, boolean vSync, Logic logic) {
 		gameLoopThread = new Thread(this, "GAME_LOOP_THREAD");
 		window = new Window(TITLE, WIDTH, HEIGHT, vSync);
 		this.logic = logic;
 		timer = new Timer();
+		mouseInput = new MouseInput();
 	}
 
 	public void start() {
@@ -37,6 +39,7 @@ public class GameManager implements Runnable {
 
 		window.init();
 		timer.init();
+		mouseInput.init(window);
 		logic.init(window);
 	}
 
@@ -98,11 +101,12 @@ public class GameManager implements Runnable {
 	}
 
 	private void input() {
-		logic.input(window);
+		mouseInput.input(window);
+		logic.input(window,mouseInput);
 	}
 
 	private void update(float interval) {
-		logic.update(interval);
+		logic.update(interval,mouseInput);
 	}
 
 	private void render() {

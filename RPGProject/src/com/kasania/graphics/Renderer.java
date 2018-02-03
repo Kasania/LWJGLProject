@@ -9,6 +9,7 @@ import static org.lwjgl.opengl.GL30.*;
 import org.joml.Matrix4f;
 import org.lwjgl.system.MemoryUtil;
 
+import com.kasania.core.Camera;
 import com.kasania.core.GameItem;
 import com.kasania.graphics.element.Mesh;
 import com.kasania.graphics.element.Shader;
@@ -20,10 +21,9 @@ public class Renderer {
 	private final float FOV = (float)Math.toRadians(60.0f);
 	private final float ZNear = 0.01f;
 	private final float ZFar = 1000.f;
-	private Matrix4f projectionMatrix;
 	private final Transformation transformation;
-
 	private Shader shader;
+	
 	{
 		transformation = new Transformation();
 	}
@@ -34,14 +34,12 @@ public class Renderer {
 		shader.createFragmentShader(ResourceManager.loadResource("/shaders/fragment.frg"));
 		shader.link();
 		
-		float aspectRatio = (float) window.getWidth()	 / window.getHeight();
-		projectionMatrix = new Matrix4f().perspective(FOV, aspectRatio, ZNear, ZFar);
 		shader.createUniform("projectionMatrix");
-		shader.createUniform("worldMatrix");
+		shader.createUniform("modelViewMatrix");
 		shader.createUniform("texture_sampler");
 	}
 	
-	public void render(Window window, GameItem[] gameItems) {
+	public void render(Window window, Camera camera,GameItem[] gameItems) {
         clear();
 
         if (window.isResized()) {
@@ -49,17 +47,21 @@ public class Renderer {
             window.setResized(false);
         }
 
-        shader.bind();
+        shader.bind();	
+        
+        // Update projection Matrix
         Matrix4f projectionMatrix = transformation.getProjectionMatrix(FOV, window.getWidth(), window.getHeight(), ZNear, ZFar);
         shader.setUniform("projectionMatrix", projectionMatrix);
+
+        // Update view Matrix
+        Matrix4f viewMatrix = transformation.getViewMatrix(camera);
+        
         shader.setUniform("texture_sampler", 0);
+        
         for(GameItem gameItem : gameItems) {
-            // Set world matrix for this item
-            Matrix4f worldMatrix = transformation.getWorldMatrix(
-                    gameItem.getPosition(),
-                    gameItem.getRotation(),
-                    gameItem.getScale());
-            shader.setUniform("worldMatrix", worldMatrix);
+            // Set model view matrix for this item
+            Matrix4f modelViewMatrix = transformation.getModelViewMatrix(gameItem, viewMatrix);
+            shader.setUniform("modelViewMatrix", modelViewMatrix);
             // Render the mes for this game item
             gameItem.getMesh().render();
         }
