@@ -9,7 +9,7 @@ public class Entry {
 		try{
 			boolean vsync = true;
 			Logic logic = new DummyLogic();
-			GameManager gameManager = new GameManager("TEST", 800, 600, vsync, logic);
+			GameManager gameManager = new GameManager("TEST", 1600, 900, vsync, logic);
 			gameManager.start();
 		}catch(Exception e){
 			e.printStackTrace();

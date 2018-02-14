@@ -69,7 +69,7 @@ public class Window {
 		GL.createCapabilities();
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glEnable(GL_DEPTH_TEST);
-		glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+//		glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 	}
 
 	public long getHandle() {
