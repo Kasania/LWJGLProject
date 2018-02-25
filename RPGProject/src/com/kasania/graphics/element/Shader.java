@@ -45,6 +45,11 @@ public class Shader {
 	        createUniform(uniformName + ".att.linear");
 	        createUniform(uniformName + ".att.exponent");
 	    }
+	    public void createDirectionalLightUniform(String uniformName) throws Exception {
+	        createUniform(uniformName + ".colour");
+	        createUniform(uniformName + ".direction");
+	        createUniform(uniformName + ".intensity");
+	    }
 
 	    public void createMaterialUniform(String uniformName) throws Exception {
 	        createUniform(uniformName + ".ambient");
@@ -87,6 +92,12 @@ public class Shader {
 	        setUniform(uniformName + ".att.constant", att.getConstant());
 	        setUniform(uniformName + ".att.linear", att.getLinear());
 	        setUniform(uniformName + ".att.exponent", att.getExponent());
+	    }
+	    
+	    public void setUniform(String uniformName, DirectionalLight dirLight) {
+	    	setUniform(uniformName + ".intensity", dirLight.getIntensity());
+	    	setUniform(uniformName + ".colour", dirLight.getColor());
+	        setUniform(uniformName + ".direction", dirLight.getDirection());
 	    }
 
 	    public void setUniform(String uniformName, Material material) {

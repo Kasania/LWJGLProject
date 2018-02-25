@@ -7,6 +7,7 @@ import org.joml.Vector4f;
 
 import com.kasania.core.Camera;
 import com.kasania.core.GameItem;
+import com.kasania.graphics.element.DirectionalLight;
 import com.kasania.graphics.element.Mesh;
 import com.kasania.graphics.element.PointLight;
 import com.kasania.graphics.element.Shader;
@@ -52,6 +53,7 @@ public class Renderer {
         shader.createUniform("specularPower");
         shader.createUniform("ambientLight");
         shader.createPointLightUniform("pointLight");
+        shader.createDirectionalLightUniform("directionalLight");
     }
 
     public void clear() {
@@ -59,7 +61,7 @@ public class Renderer {
     }
 
     public void render(Window window, Camera camera, GameItem[] gameItems, Vector3f ambientLight,
-            PointLight pointLight) {
+            PointLight pointLight, DirectionalLight directionalLight) {
 
         clear();
 
@@ -90,6 +92,12 @@ public class Renderer {
         lightPos.z = aux.z;
         shader.setUniform("pointLight", currPointLight);
 
+        DirectionalLight currDirLight = new DirectionalLight(directionalLight);
+        Vector4f dir = new Vector4f(currDirLight.getDirection(), 0);
+        dir.mul(viewMatrix);
+        currDirLight.setDirection(new Vector3f(dir.x, dir.y, dir.z));
+        shader.setUniform("directionalLight", currDirLight);
+        
         shader.setUniform("texture_sampler", 0);
         // Render each gameItem
         for (GameItem gameItem : gameItems) {
